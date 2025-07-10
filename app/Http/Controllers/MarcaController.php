@@ -50,7 +50,7 @@ class MarcaController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id)
+    public function update(MarcaRequest $request, $id)
     {
         $marca = $this->marca->find($id);
 

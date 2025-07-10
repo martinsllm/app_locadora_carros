@@ -22,8 +22,10 @@ class MarcaRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nome' => 'required|unique:marcas',
+            'nome' => 'required|min:3|unique:marcas,nome,' . $this->route('marca'),
             'imagem' => 'required'
         ];
+
+
     }
 }
