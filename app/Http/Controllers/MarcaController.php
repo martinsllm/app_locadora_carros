@@ -65,7 +65,14 @@ class MarcaController extends Controller
             return response()->json(['erro' => 'Impossível realizar a atualização: o recurso solicitado não existe.'], 404);
         }
 
-        $marca->update($request->all());
+        $imagem = $request->file('imagem');
+        $imagem_urn = $imagem->store('imagens', 'public');
+
+        $marca->update([
+            'nome' => $request->nome,
+            'imagem' => $imagem_urn
+        ]);
+
         return response()->json($marca, 200);
     }
 
