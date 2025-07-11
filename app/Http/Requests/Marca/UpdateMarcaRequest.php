@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Marca;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class MarcaRequest extends FormRequest
+class UpdateMarcaRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,10 +22,8 @@ class MarcaRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nome' => 'required|min:3|unique:marcas,nome,' . $this->route('marca'),
-            'imagem' => 'required|file|mimes:png,jpg,jpeg'
+            'nome' => 'sometimes|min:3|unique:marcas,nome,' . $this->route('marca'),
+            'imagem' => 'sometimes|file|mimes:png,jpg,jpeg'
         ];
-
-
     }
 }

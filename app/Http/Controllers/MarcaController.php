@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\MarcaRequest;
+use App\Http\Requests\Marca\StoreMarcaRequest;
+use App\Http\Requests\Marca\UpdateMarcaRequest;
 use App\Models\Marca;
 use Illuminate\Support\Facades\Storage;
 
@@ -27,7 +28,7 @@ class MarcaController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(MarcaRequest $request)
+    public function store(StoreMarcaRequest $request)
     {
         $imagem = $request->file('imagem');
         $imagem_urn = $imagem->store('imagens', 'public');
@@ -57,7 +58,7 @@ class MarcaController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(MarcaRequest $request, $id)
+    public function update(UpdateMarcaRequest $request, $id)
     {
         $marca = $this->marca->find($id);
 
@@ -65,19 +66,20 @@ class MarcaController extends Controller
             return response()->json(['erro' => 'Impossível realizar a atualização: o recurso solicitado não existe.'], 404);
         }
 
-        //Remove o arquivo antigo se for enviado um no request
         if ($request->file('imagem')) {
+            //Remove o arquivo antigo se for enviado um no request
             Storage::disk('public')->delete($marca->imagem);
+
+            $imagem = $request->file('imagem');
+            $imagem_urn = $imagem->store('imagens', 'public');
+            $marca->fill($request->all());
+
+            $marca->imagem = $imagem_urn;
+        } else {
+            $marca->fill($request->all());
         }
 
-        $imagem = $request->file('imagem');
-        $imagem_urn = $imagem->store('imagens', 'public');
-
-        $marca->update([
-            'nome' => $request->nome,
-            'imagem' => $imagem_urn
-        ]);
-
+        $marca->save();
         return response()->json($marca, 200);
     }
 

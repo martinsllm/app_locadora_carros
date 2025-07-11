@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Modelo;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ModeloRequest extends FormRequest
+class UpdateModeloRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,12 +23,12 @@ class ModeloRequest extends FormRequest
     {
         return [
             'marca_id' => 'exists:marcas,id',
-            'nome' => 'required|unique:modelos,nome,' . $this->route('modelo'),
-            'imagem' => 'required|file|mimes:png,jpg,jpeg',
-            'numero_portas' => 'required|integer|digits_between:1,5',
-            'lugares' => 'required|integer|digits_between:1,20',
-            'air_bag' => 'required|boolean',
-            'abs' => 'required|boolean',
+            'nome' => 'sometimes|unique:modelos,nome,' . $this->route('modelo'),
+            'imagem' => 'sometimes|file|mimes:png,jpg,jpeg',
+            'numero_portas' => 'sometimes|integer|digits_between:1,5',
+            'lugares' => 'sometimes|integer|digits_between:1,20',
+            'air_bag' => 'sometimes|boolean',
+            'abs' => 'sometimes|boolean',
         ];
     }
 }

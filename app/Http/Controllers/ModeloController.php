@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ModeloRequest;
+use App\Http\Requests\Modelo\StoreModeloRequest;
+use App\Http\Requests\Modelo\UpdateModeloRequest;
 use App\Models\Modelo;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class ModeloController extends Controller
@@ -27,7 +27,7 @@ class ModeloController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(ModeloRequest $request)
+    public function store(StoreModeloRequest $request)
     {
         $imagem = $request->file('imagem');
         $imagem_urn = $imagem->store('imagens/modelos', 'public');
@@ -62,7 +62,7 @@ class ModeloController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(ModeloRequest $request, $id)
+    public function update(UpdateModeloRequest $request, $id)
     {
         $modelo = $this->modelo->find($id);
 
@@ -70,24 +70,19 @@ class ModeloController extends Controller
             return response()->json(['erro' => 'Impossível realizar a atualização: o recurso solicitado não existe.'], 404);
         }
 
-        //Remove o arquivo antigo se for enviado um no request
         if ($request->file('imagem')) {
+            //Remove o arquivo antigo se for enviado um no request
             Storage::disk('public')->delete($modelo->imagem);
+            $imagem = $request->file('imagem');
+            $imagem_urn = $imagem->store('imagens/modelos', 'public');
+            $modelo->fill($request->all());
+
+            $modelo->imagem = $imagem_urn;
+        } else {
+            $modelo->fill($request->all());
         }
 
-        $imagem = $request->file('imagem');
-        $imagem_urn = $imagem->store('imagens/modelos', 'public');
-
-        $modelo->update([
-            'marca_id' => $request->marca_id,
-            'nome' => $request->nome,
-            'imagem' => $imagem_urn,
-            'numero_portas' => $request->numero_portas,
-            'lugares' => $request->lugares,
-            'air_bag' => $request->air_bag,
-            'abs' => $request->abs
-        ]);
-
+        $modelo->save();
         return response()->json($modelo, 200);
     }
 
