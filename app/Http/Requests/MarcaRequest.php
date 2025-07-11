@@ -23,7 +23,7 @@ class MarcaRequest extends FormRequest
     {
         return [
             'nome' => 'required|min:3|unique:marcas,nome,' . $this->route('marca'),
-            'imagem' => 'required'
+            'imagem' => 'required|file|mimes:png,jpg,jpeg'
         ];
 
 
