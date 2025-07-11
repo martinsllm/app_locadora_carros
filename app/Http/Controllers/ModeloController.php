@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ModeloRequest;
 use App\Models\Modelo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -20,13 +21,13 @@ class ModeloController extends Controller
      */
     public function index()
     {
-        return response()->json($this->modelo->all(), 200);
+        return response()->json($this->modelo->with('marca')->get(), 200);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(ModeloRequest $request)
     {
         $imagem = $request->file('imagem');
         $imagem_urn = $imagem->store('imagens/modelos', 'public');
@@ -49,7 +50,7 @@ class ModeloController extends Controller
      */
     public function show($id)
     {
-        $modelo = $this->modelo->find($id);
+        $modelo = $this->modelo->with('marca')->find($id);
 
         if ($modelo === null) {
             return response()->json(['erro' => 'Recurso pesquisado não existe'], 404);
@@ -61,7 +62,7 @@ class ModeloController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id)
+    public function update(ModeloRequest $request, $id)
     {
         $modelo = $this->modelo->find($id);
 

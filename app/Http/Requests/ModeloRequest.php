@@ -23,7 +23,7 @@ class ModeloRequest extends FormRequest
     {
         return [
             'marca_id' => 'exists:marcas,id',
-            'nome' => 'required|unique:modelo,nome,' . $this->route('modelo'),
+            'nome' => 'required|unique:modelos,nome,' . $this->route('modelo'),
             'imagem' => 'required|file|mimes:png,jpg,jpeg',
             'numero_portas' => 'required|integer|digits_between:1,5',
             'lugares' => 'required|integer|digits_between:1,20',
